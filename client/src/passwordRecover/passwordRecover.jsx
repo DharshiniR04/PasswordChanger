@@ -67,7 +67,7 @@ function PasswordRecover() {
     };
 
     try {
-      const response = await axios.patch("http://localhost:5500/api/passwordRecovery", data);
+      const response = await axios.patch("https://password-changer-server.vercel.app/api/passwordRecovery", data);
       if(response.data.message==="User Not Found"){
         alert("User Not Found");
         return;
