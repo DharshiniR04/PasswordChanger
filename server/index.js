@@ -11,7 +11,7 @@ connectDB();
 
 const app = express();
 app.use(cors({
-    origin: "https://password-changer-client.vercel.app/", 
+    origin: "https://password-changer-client.vercel.app", 
     methods: ["POST", "GET","PATCH"],
     credentials: true
   }));
