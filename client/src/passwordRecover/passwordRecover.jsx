@@ -128,7 +128,7 @@ function PasswordRecover() {
               </span>
             </div>
             <p id="confirmPass" className={confirmMessage.includes("match") ? "success" : "error"}>{confirmMessage}</p>
-            <button type="submit">Send Recovery Email</button>
+            <button type="submit">Change Password</button>
           </form>
         </div>
       </div>
