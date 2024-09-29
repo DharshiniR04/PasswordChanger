@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors=require('cors');
 const connectDB = require('./config/db');
 const User=require('./model/users');
+const Admin = require('./model/admin');
 const bcrypt=require('bcrypt');
 
 dotenv.config();
