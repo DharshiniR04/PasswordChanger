@@ -29,23 +29,36 @@ app.get("/",async(req,res)=>{
     res.json("WELCOME TO EVENTLINK PASSWORD RECOVERY SERVER");
 })
 
-app.patch("/api/passwordRecovery",async(req,res)=>{
-    const{email,password}=req.body;
-    try{
-       const user=await User.findOne({email});
-       const hashedPassword = await bcrypt.hash(password, 10);
-       if(!(user)){
-          res.status(200).json({message:"User Not Found"});
-          return;
-       }
-       await User.updateOne({email:email},{$set:{password:hashedPassword}});
-       res.status(200).json({message:"Updated Successfully"});
+app.patch("/api/passwordRecovery", async (req, res) => {
+    const { email, password, userType } = req.body;
+    try {
+        if (userType == "user") {
+            const user = await User.findOne({ email });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            if (!(user)) {
+                res.status(200).json({ message: "User Not Found" });
+                return;
+            }
+            await User.updateOne({ email: email }, { $set: { password: hashedPassword } });
+            res.status(200).json({ message: "Updated Successfully" });
+        }
+        else if (userType == "admin") {
+            const admin = await Admin.findOne({ email });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            if (!(admin)) {
+                res.status(200).json({ message: "Admin Not Found" });
+                return;
+            }
+            await Admin.updateOne({ email: email }, { $set: { password: hashedPassword } });
+            res.status(200).json({ message: "Updated Successfully" });
+        }
     }
-    catch(err){
+    catch (err) {
         console.log(err);
-        res.status(500).json({message:"Server Error"});
+        res.status(500).json({ message: "Server Error" });
     }
 })
+
 
 const PORT = process.env.PORT;
 
