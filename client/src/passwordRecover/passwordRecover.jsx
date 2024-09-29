@@ -11,6 +11,7 @@ function PasswordRecover() {
   const [passwordStrength, setPasswordStrength] = useState("");
   const [strengthClass, setStrengthClass] = useState("");
   const [confirmMessage, setConfirmMessage] = useState("");
+  const [userType, setUserType] = useState("user"); 
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -30,7 +31,6 @@ function PasswordRecover() {
     if (criteriaMet === 5) {
       strength = "Strong";
       setStrengthClass("Strong");
-      let str=document.getElementById("passwordStrength").textContent="";
     } else if (criteriaMet >= 3) {
       strength = "Moderate";
       setStrengthClass("Moderate");
@@ -43,12 +43,11 @@ function PasswordRecover() {
     setPasswordStrength(strength);
   };
 
-  const confirmPassord = (newPassword) => {
+  const confirmPasswordMatch = (newPassword) => {
     setConfirmPassword(newPassword);
     if (newPassword !== password) {
       setConfirmMessage("Passwords don't match");
-    } 
-    else {
+    } else {
       setConfirmMessage("Passwords match!");
     }
   };
@@ -63,20 +62,23 @@ function PasswordRecover() {
 
     const data = {
       email: e.target.elements.email.value,
-      password: password
+      password: password,
+      userType: userType 
     };
 
     try {
       const response = await axios.patch("https://password-changer-server.vercel.app/api/passwordRecovery", data);
-      if(response.data.message==="User Not Found"){
+      if(response.data.message === "User Not Found") {
         alert("User Not Found");
         return;
       }
-      alert("Passwords Changed  successfully");
-
+      else if(response.data.message==="Admin Not Found"){
+        alert("Admin Not Found");
+        return;
+      }
+      alert("Passwords changed successfully");
     } catch (err) {
       console.error(err);
-    
     }
   };
 
@@ -96,6 +98,19 @@ function PasswordRecover() {
               name="email"
               required
             />
+
+            <label htmlFor="userType">Select User Type:</label>
+            <select
+              id="userType"
+              name="userType"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+              required
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+
             <label htmlFor="password">Enter Password:</label>
             <div className="input-container">
               <input
@@ -112,15 +127,16 @@ function PasswordRecover() {
               </span>
             </div>
             <p id="passwordStrength" className={strengthClass}>{passwordStrength}</p>
-            <label htmlFor="confirmpassword">Confirm Password:</label>
+
+            <label htmlFor="confirmPassword">Confirm Password:</label>
             <div className="input-container">
               <input
                 type={showPassword ? "text" : "password"}
-                id="confirmpassword"
-                name="confirmpassword"
+                id="confirmPassword"
+                name="confirmPassword"
                 className="solid-input"
                 placeholder="8-Characters"
-                onChange={(e) => confirmPassord(e.target.value)}
+                onChange={(e) => confirmPasswordMatch(e.target.value)}
                 required
               />
               <span className="signup-password-toggle" onClick={togglePasswordVisibility}>
@@ -128,6 +144,7 @@ function PasswordRecover() {
               </span>
             </div>
             <p id="confirmPass" className={confirmMessage.includes("match") ? "success" : "error"}>{confirmMessage}</p>
+
             <button type="submit">Change Password</button>
           </form>
         </div>
